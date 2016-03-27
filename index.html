@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>file metadata api</title>
+  </head>
+  <body>
+    <h1>file metadata api</h1>
+    <p>upload a file with the form below to get its size in bytes</p>
+    <p>uses <!--URL-->api/fileanalyse</p>
+    <form class='fileSubmit' method='post' enctype="multipart/form-data">
+      <input class='file' type="file">
+      <button type="submit">Submit</button>
+    </form>
+    <p class='bytes'></p>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var file;
+        $('.file').on('change', function(event) {
+          file = event.target.files;
+        });
+        
+        $('.fileSubmit').on('submit', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          var submission = new FormData();
+          submission.append('file', file[0]);
+          $.ajax({
+            url: '/api/fileanalyse/',
+            type: 'POST',
+            data: submission,
+            cache: false,
+      			processData: false,
+      			contentType: false,
+            success: function(data) {
+              $('.bytes').html('bytes: '+ data.bytes);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+						  $('.bytes').html('error: '+ textStatus);
+			 		  }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
